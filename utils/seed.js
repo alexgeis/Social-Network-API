@@ -1,11 +1,7 @@
 const connection = require("../config/connection");
-const { Thought, Reaction } = require("../models");
-const {
-  getRandomName,
-  getRandomReactions,
-  getRandomThought,
-  genRandomIndex,
-} = require("./data");
+const { User, Thought } = require("../models");
+const { Reaction } = require("../models/Reaction");
+const { getRandomName, getRandomThought, getRandomEmail } = require("./data");
 
 // Start the seeding runtime timer
 console.time("seeding");
@@ -13,33 +9,27 @@ console.time("seeding");
 // Creates a connection to mongodb
 connection.once("open", async () => {
   // Delete the entries in the collection
+  await User.deleteMany({});
   await Thought.deleteMany({});
   await Reaction.deleteMany({});
 
   // Empty arrays for randomly generated thoughts and reactions
-  const reactions = [...getRandomReactions(10)];
-  const thoughts = [];
+  const users = [];
+  const thoughts = getRandomThought(10);
 
-  // Makes reactions array
-  const makeThought = (text) => {
-    thoughts.push({
-      text,
-      username: getRandomName().split(" ")[0],
-      reactions: [reactions[genRandomIndex(reactions)]._id],
+  for (let i = 0; i < 5; i++) {
+    const username = getRandomName();
+    const email = getRandomEmail();
+    users.push({
+      username,
+      email,
     });
-  };
+  }
 
-  // Wait for the reactions to be inserted into the database
-  await Reaction.collection.insertMany(reactions);
-
-  // For each of the reactions that exist, make a random thought of 10 words
-  reactions.forEach(() => makeThought(getRandomThought(10)));
-
-  // Wait for the thoughts array to be inserted into the database
+  await User.collection.insertMany(users);
   await Thought.collection.insertMany(thoughts);
 
-  // Log out a pretty table for reactions and thoughts
-  console.table(reactions);
+  console.table(users);
   console.table(thoughts);
   console.timeEnd("seeding complete 🌱");
   process.exit(0);

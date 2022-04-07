@@ -24,11 +24,12 @@ const reactionSchema = new Schema(
   {
     toJSON: {
       getters: true,
+      // id: false,
     },
   }
 );
 
 // Initialize the Reaction model
-// const Reaction = model("reaction", reactionSchema);
+const Reaction = model("reaction", reactionSchema);
 
-module.exports = reactionSchema;
+module.exports = { reactionSchema, Reaction };

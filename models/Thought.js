@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 const validate = require("mongoose-validator");
-const Reaction = require("./Reaction");
+const { reactionSchema } = require("./Reaction");
 
 const charLengthValidator = [
   validate({
@@ -29,7 +29,7 @@ const thoughtSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    reactions: [Reaction],
+    reactions: [reactionSchema],
   },
   {
     toJSON: {
@@ -46,6 +46,6 @@ thoughtSchema.virtual("reactionCount").get(function () {
 });
 
 // Initialize Thought model
-const Thought = model("thought", thoughtSchema);
+const Thought = model("Thought", thoughtSchema);
 
 module.exports = Thought;

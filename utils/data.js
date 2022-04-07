@@ -124,8 +124,13 @@ const lorum = [
 const genRandomIndex = (arr) => Math.floor(Math.random() * arr.length);
 
 const getRandomWord = () => `${lorum[genRandomIndex(lorum)]}`;
+// random email
+const getRandomEmail = () =>
+  `${getRandomArrItem(names)}@${getRandomArrItem(names)}.com`;
+// Get a random item given an array
+const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-const getRandomThought = (words) => {
+const createThought = (words) => {
   let thought = "";
   for (let i = 0; i < words; i++) {
     thought += ` ${getRandomWord()}`;
@@ -133,29 +138,42 @@ const getRandomThought = (words) => {
   return thought;
 };
 
-// Get a random item given an array
-const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
-// Gets a random full name
-const getRandomName = () =>
-  `${getRandomArrItem(names)} ${getRandomArrItem(names)}`;
-
-// Function to generate random reactions given a number (ex. 10 reactions === getRandomReactions(10))
-const getRandomReactions = (int) => {
-  const results = [];
+const getRandomThought = (int) => {
+  let results = [];
   for (let i = 0; i < int; i++) {
     results.push({
-      text: getRandomArrItem(reactions),
-      username: getRandomName().split(" ")[0],
+      thoughtText: ` ${createThought(10)}`,
+      username: getRandomName(),
+      reactions: [...getThoughtReactions(2)],
     });
   }
   return results;
 };
 
+// Create the reactions that will be added to each thought
+const getThoughtReactions = (int) => {
+  if (int === 1) {
+    return getRandomArrItem(reactions);
+  }
+  const results = [];
+  for (let i = 0; i < int; i++) {
+    results.push({
+      responseBody: getRandomArrItem(reactions),
+      username: getRandomName(),
+    });
+  }
+  return results;
+};
+
+// Gets a random full name
+const getRandomName = () => `${getRandomArrItem(names)}`;
+
 // Export the functions for use in seed.js
 module.exports = {
   getRandomName,
-  getRandomReactions,
   getRandomThought,
   genRandomIndex,
+  getRandomEmail,
+  getThoughtReactions,
+  getRandomArrItem,
 };
